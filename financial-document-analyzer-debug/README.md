@@ -1,38 +1,200 @@
-# Financial Document Analyzer - Debug Assignment
+#  Financial Document Analyzer – CrewAI Debug Challenge
 
-## Project Overview
-A comprehensive financial document analysis system that processes corporate reports, financial statements, and investment documents using AI-powered analysis agents.
+##  Project Overview
 
-## Getting Started
+This project is a fully debugged and refactored Financial Document Analyzer system built using:
 
-### Install Required Libraries
-```sh
-pip install -r requirement.txt
+- FastAPI (API layer)
+- CrewAI (multi-agent orchestration)
+- OpenAI (LLM)
+- LangChain PDF Loader
+- Python
+
+The system accepts financial PDF documents, processes them through a multi-agent CrewAI pipeline, and generates structured financial insights.
+
+This submission focuses on identifying, debugging, and fixing major architectural and dependency issues in the original codebase.
+
+---
+
+#  System Architecture
+
+User Upload → FastAPI → CrewAI Crew → Agents → Tools → Response
+
+### Components:
+
+- **FastAPI Backend**
+  - Handles file upload and query input
+  - Exposes REST API endpoints
+
+- **CrewAI Crew**
+  - Sequential execution process
+  - Financial Analyst Agent
+
+- **Custom Tools**
+  - PDF Reader Tool
+  - Investment Analysis Tool
+  - Risk Assessment Tool
+
+---
+
+#  Bugs Identified & Fixed
+
+## 1️⃣ Dependency Conflicts
+
+### Problem:
+- Conflicts between:
+  - opentelemetry versions
+  - pydantic-core versions
+  - openai package versions
+  - crewai and crewai-tools
+
+### Fix:
+- Removed strict version pinning where unnecessary
+- Simplified requirements.txt
+- Removed incompatible telemetry packages
+- Rebuilt environment from scratch
+
+---
+
+## 2️⃣ CrewAI Import Errors
+
+### Problem:
+```
+ImportError: cannot import name 'Agent'
 ```
 
-### Sample Document
-The system analyzes financial documents like Tesla's Q2 2025 financial update.
+### Fix:
+- Updated imports to match latest CrewAI structure
+- Used `from crewai import Agent`
 
-**To add Tesla's financial document:**
-1. Download the Tesla Q2 2025 update from: https://www.tesla.com/sites/default/files/downloads/TSLA-Q2-2025-Update.pdf
-2. Save it as `data/sample.pdf` in the project directory
-3. Or upload any financial PDF through the API endpoint
+---
 
-**Note:** Current `data/sample.pdf` is a placeholder - replace with actual Tesla financial document for proper testing.
+## 3️⃣ Tool Validation Errors (Pydantic)
 
-# You're All Not Set!
-🐛 **Debug Mode Activated!** The project has bugs waiting to be squashed - your mission is to fix them and bring it to life.
+### Problem:
+```
+ValidationError: tools.0 Input should be a valid dictionary or BaseTool
+```
 
-## Debugging Instructions
+### Fix:
+- Refactored tools to use `@tool` decorator
+- Ensured each tool includes proper docstrings
+- Converted class-based tools into functional tools
 
-1. **Identify the Bug**: Carefully read the code in each file and understand the expected behavior. There is a bug in each line of code. So be careful.
-2. **Fix the Bug**: Implement the necessary changes to fix the bug.
-3. **Test the Fix**: Run the project and verify that the bug is resolved.
-4. **Repeat**: Continue this process until all bugs are fixed.
+---
 
-## Expected Features
-- Upload financial documents (PDF format)
-- AI-powered financial analysis
-- Investment recommendations
-- Risk assessment
-- Market insights
+## 4️⃣ Missing python-multipart Error
+
+### Problem:
+```
+Form data requires "python-multipart"
+```
+
+### Fix:
+- Added `python-multipart` to requirements.txt
+
+---
+
+## 5️⃣ Indentation & Runtime Errors
+
+- Fixed indentation mismatches
+- Removed outdated tool references
+- Corrected variable naming issues
+- Removed undefined objects
+
+---
+
+# ⚙️ Setup Instructions
+
+## 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/Shivathamme/financial-document-analyzer.git
+cd financial-document-analyzer
+```
+
+## 2️⃣ Create Virtual Environment
+
+```bash
+python -m venv venv
+venv\Scripts\activate   # Windows
+```
+
+## 3️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## 4️⃣ Run Server
+
+```bash
+uvicorn main:app --reload
+```
+
+---
+
+# 📡 API Documentation
+
+Once server is running, open:
+
+```
+http://127.0.0.1:8000/docs
+```
+
+FastAPI Swagger UI provides interactive API documentation.
+
+---
+
+# 🔌 API Endpoints
+
+## GET /
+
+Health check endpoint.
+
+### Response:
+```json
+{
+  "message": "Financial Document Analyzer API is running"
+}
+```
+
+---
+
+## POST /analyze
+
+Upload financial document and optional query.
+
+### Form Data:
+- file (PDF)
+- query (optional text)
+
+### Response:
+```json
+{
+  "status": "success",
+  "analysis": "...",
+  "file_processed": "filename.pdf"
+}
+```
+
+---
+
+# 🏗 Improvements Made Beyond Bug Fixes
+
+- Refactored tools into proper CrewAI-compliant structure
+- Cleaned dependency tree
+- Rebuilt environment cleanly
+- Ensured reproducible installation
+- Structured project for clarity
+
+---
+
+# 🔐 Security Considerations
+
+- No API keys stored in repository
+- .env excluded via .gitignore
+- venv excluded from version control
+
+
+  
