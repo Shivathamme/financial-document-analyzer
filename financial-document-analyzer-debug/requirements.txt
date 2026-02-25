@@ -1,0 +1,16 @@
+click==8.1.8
+# Keep crewai at version 0.130.0
+# Other package versions are flexible and can be changed
+# Only change crewai version if there are critical dependency conflicts that cannot be resolved by other means
+crewai==0.130.0 
+crewai-tools==0.47.1
+fastapi==0.110.3
+numpy==1.26.4
+pandas==2.2.2
+pillow==10.3.0
+pydantic>=2.6.1
+uvicorn==0.29.0
+openai>=1.13.3
+langchain-community
+python-dotenv
+python-multipart
