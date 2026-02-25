@@ -1,200 +1,157 @@
-#  Financial Document Analyzer – CrewAI Debug Challenge
+# Financial Document Analyzer – CrewAI Debug Challenge
 
-##  Project Overview
+## Overview
 
-This project is a fully debugged and refactored Financial Document Analyzer system built using:
+This project is a financial document analysis system built using CrewAI and FastAPI.  
+The original codebase contained multiple dependency conflicts, broken imports, tool validation errors, and runtime issues.
 
-- FastAPI (API layer)
-- CrewAI (multi-agent orchestration)
-- OpenAI (LLM)
-- LangChain PDF Loader
-- Python
+My task was to debug the system and make it fully functional.
 
-The system accepts financial PDF documents, processes them through a multi-agent CrewAI pipeline, and generates structured financial insights.
+The system now:
 
-This submission focuses on identifying, debugging, and fixing major architectural and dependency issues in the original codebase.
-
----
-
-#  System Architecture
-
-User Upload → FastAPI → CrewAI Crew → Agents → Tools → Response
-
-### Components:
-
-- **FastAPI Backend**
-  - Handles file upload and query input
-  - Exposes REST API endpoints
-
-- **CrewAI Crew**
-  - Sequential execution process
-  - Financial Analyst Agent
-
-- **Custom Tools**
-  - PDF Reader Tool
-  - Investment Analysis Tool
-  - Risk Assessment Tool
+- Accepts financial PDF uploads
+- Processes them using CrewAI agents
+- Returns analysis via a FastAPI endpoint
+- Runs successfully without dependency conflicts
 
 ---
 
-#  Bugs Identified & Fixed
+## What I Found and Fixed
 
-## 1️⃣ Dependency Conflicts
+### 1. Dependency Conflicts
 
-### Problem:
-- Conflicts between:
-  - opentelemetry versions
-  - pydantic-core versions
-  - openai package versions
-  - crewai and crewai-tools
+The project initially failed to install due to multiple version conflicts between:
 
-### Fix:
-- Removed strict version pinning where unnecessary
-- Simplified requirements.txt
-- Removed incompatible telemetry packages
-- Rebuilt environment from scratch
+- opentelemetry packages
+- pydantic and pydantic-core
+- openai versions
+- crewai and crewai-tools
+
+Fix:
+- Simplified `requirements.txt`
+- Removed strict and conflicting version pins
+- Rebuilt virtual environment from scratch
+- Verified clean installation
 
 ---
 
-## 2️⃣ CrewAI Import Errors
+### 2. CrewAI Import Errors
 
-### Problem:
-```
+Error:
 ImportError: cannot import name 'Agent'
-```
 
-### Fix:
-- Updated imports to match latest CrewAI structure
-- Used `from crewai import Agent`
+Cause:
+Outdated import structure.
 
----
-
-## 3️⃣ Tool Validation Errors (Pydantic)
-
-### Problem:
-```
-ValidationError: tools.0 Input should be a valid dictionary or BaseTool
-```
-
-### Fix:
-- Refactored tools to use `@tool` decorator
-- Ensured each tool includes proper docstrings
-- Converted class-based tools into functional tools
+Fix:
+Updated imports to:
+from crewai import Agent
 
 ---
 
-## 4️⃣ Missing python-multipart Error
+### 3. Tool Validation Errors (Pydantic)
 
-### Problem:
-```
+Error:
+ValidationError: Input should be a valid dictionary or BaseTool
+
+Cause:
+Tools were defined as plain functions/classes instead of CrewAI-compatible tools.
+
+Fix:
+- Refactored tools using `@tool` decorator
+- Added proper docstrings (required by CrewAI)
+- Converted class-based tools into functional format
+
+---
+
+### 4. FastAPI Multipart Error
+
+Error:
 Form data requires "python-multipart"
-```
 
-### Fix:
-- Added `python-multipart` to requirements.txt
+Fix:
+Added `python-multipart` to requirements.txt
 
 ---
 
-## 5️⃣ Indentation & Runtime Errors
+### 5. Indentation & Runtime Errors
 
 - Fixed indentation mismatches
-- Removed outdated tool references
-- Corrected variable naming issues
-- Removed undefined objects
+- Removed undefined variables
+- Corrected tool imports
+- Removed unused search tool
 
 ---
 
-# ⚙️ Setup Instructions
+## How to Run the Project
 
-## 1️⃣ Clone Repository
+### 1. Clone Repository
 
-```bash
+```
 git clone https://github.com/Shivathamme/financial-document-analyzer.git
 cd financial-document-analyzer
 ```
 
-## 2️⃣ Create Virtual Environment
+### 2. Create Virtual Environment
 
-```bash
+```
 python -m venv venv
-venv\Scripts\activate   # Windows
+venv\Scripts\activate
 ```
 
-## 3️⃣ Install Dependencies
+### 3. Install Dependencies
 
-```bash
+```
 pip install -r requirements.txt
 ```
 
-## 4️⃣ Run Server
+### 4. Run Server
 
-```bash
+```
 uvicorn main:app --reload
 ```
 
 ---
 
-# 📡 API Documentation
+## API Documentation
 
-Once server is running, open:
+Once running, open:
 
-```
 http://127.0.0.1:8000/docs
-```
 
-FastAPI Swagger UI provides interactive API documentation.
+FastAPI Swagger UI provides interactive documentation.
 
 ---
 
-# 🔌 API Endpoints
+## API Endpoints
 
-## GET /
+### GET /
 
 Health check endpoint.
 
-### Response:
-```json
-{
-  "message": "Financial Document Analyzer API is running"
-}
-```
+---
+
+### POST /analyze
+
+Upload a financial PDF and optional query.
+
+Returns JSON response containing analysis.
 
 ---
 
-## POST /analyze
+## Improvements Made
 
-Upload financial document and optional query.
-
-### Form Data:
-- file (PDF)
-- query (optional text)
-
-### Response:
-```json
-{
-  "status": "success",
-  "analysis": "...",
-  "file_processed": "filename.pdf"
-}
-```
-
----
-
-# 🏗 Improvements Made Beyond Bug Fixes
-
-- Refactored tools into proper CrewAI-compliant structure
-- Cleaned dependency tree
-- Rebuilt environment cleanly
+- Clean dependency tree
+- Refactored tools properly
+- Structured agents and tasks
 - Ensured reproducible installation
-- Structured project for clarity
+- Verified project works from fresh environment
 
 ---
 
-# 🔐 Security Considerations
+## Future Enhancements (If Extended)
 
-- No API keys stored in repository
-- .env excluded via .gitignore
-- venv excluded from version control
+- Add queue worker model for concurrent requests
+- Store analysis results in database
+- Improve structured financial extraction
 
-
-  
