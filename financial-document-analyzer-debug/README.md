@@ -82,7 +82,45 @@ Added `python-multipart` to requirements.txt
 - Removed unused search tool
 
 ---
+### 6. Inefficient Prompt Engineering
 
+The original agent prompts were intentionally designed to:
+
+- Encourage hallucinations
+
+- Generate misleading financial advice
+
+- Ignore user queries
+
+- Produce exaggerated and unreliable outputs
+
+## Problems Identified:
+
+- Agents were instructed to "make up" financial advice
+
+- Prompts promoted hallucinated URLs and fake market facts
+
+- Risk and investment logic was contradictory
+
+- No grounding in actual document content
+
+## Fix Applied:
+
+- Document-based reasoning
+
+- Accurate financial interpretation
+
+- Structured and logical analysis
+
+- Risk-aware investment insights
+
+- Removed hallucination instructions
+
+- Ensured outputs align with user query
+
+- Improved clarity and deterministic behavior
+
+---
 ## How to Run the Project
 
 ### 1. Clone Repository
